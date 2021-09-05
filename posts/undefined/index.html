@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GitHub当作私密的版本控制系统远端版本库私有化哈 | songiapo</title><meta name="keywords" content="git github"><meta name="author" content="songjiapo"><meta name="copyright" content="songjiapo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="目的我打算把所有服务器的配置文件用git管理起来，这样可以记录配置变更状况。 但是有一个问题是，如何多人协作？服务器配置信息非常敏感，如果这个版本库泄漏，整个公司的服务器架构就彻底泄漏了。 这个版本库只能在开发者本地电脑里面解密，远程托管版本库的服务器不应该知道文件里面的内容。 那么解决办法就是：本地git版本库是解密的，在上传过程中内容全部加密，密钥保存在本地，同时密钥可以分享给其他开发者。 考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitHub当作私密的版本控制系统远端版本库私有化哈">
+<meta property="og:url" content="https://github.com/songapore/songapore.github.io/posts/undefined/index.html">
+<meta property="og:site_name" content="songiapo">
+<meta property="og:description" content="目的我打算把所有服务器的配置文件用git管理起来，这样可以记录配置变更状况。 但是有一个问题是，如何多人协作？服务器配置信息非常敏感，如果这个版本库泄漏，整个公司的服务器架构就彻底泄漏了。 这个版本库只能在开发者本地电脑里面解密，远程托管版本库的服务器不应该知道文件里面的内容。 那么解决办法就是：本地git版本库是解密的，在上传过程中内容全部加密，密钥保存在本地，同时密钥可以分享给其他开发者。 考">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png">
+<meta property="article:published_time" content="2018-03-15T12:15:45.000Z">
+<meta property="article:modified_time" content="2019-11-08T12:50:25.670Z">
+<meta property="article:author" content="songjiapo">
+<meta property="article:tag" content="git github">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://github.com/songapore/songapore.github.io/posts/undefined/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'GitHub当作私密的版本控制系统远端版本库私有化哈',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2019-11-08 20:50:25'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">76</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">30</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">13</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文档</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速开始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主题页面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主题配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主题配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主题问答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 进阶教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日志</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娱乐</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自语</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">songiapo</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文档</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速开始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主题页面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主题配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主题配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主题问答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 进阶教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日志</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娱乐</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自语</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">GitHub当作私密的版本控制系统远端版本库私有化哈</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2018-03-15T12:15:45.000Z" title="Created 2018-03-15 20:15:45">2018-03-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2019-11-08T12:50:25.670Z" title="Updated 2019-11-08 20:50:25">2019-11-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/git/">git</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="GitHub当作私密的版本控制系统远端版本库私有化哈"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>我打算把所有服务器的配置文件用git管理起来，这样可以记录配置变更状况。 但是有一个问题是，如何多人协作？服务器配置信息非常敏感，如果这个版本库泄漏，整个公司的服务器架构就彻底泄漏了。 这个版本库只能在开发者本地电脑里面解密，远程托管版本库的服务器不应该知道文件里面的内容。</p>
+<p>那么解决办法就是：本地git版本库是解密的，在上传过程中内容全部加密，密钥保存在本地，同时密钥可以分享给其他开发者。</p>
+<h3 id="考虑了几个解决方案："><a href="#考虑了几个解决方案：" class="headerlink" title="考虑了几个解决方案："></a>考虑了几个解决方案：</h3><ol>
+<li><p><code>git-crypt</code>：可以加密部分文件，原理是加上了加密的fiter和diff， 但是官方说只适合加密部分文件，而不适合全版本库加密。部分文件加密很容易造成信息泄漏，一定要全版本库加密才适合。</p>
+</li>
+<li><p>串联<code>sshfs</code>和远程服务器加密文件系统<code>encfs</code>：首先用<code>sshfs</code>加载远端文件系统，然后用<code>encfs</code>创建加密文件系统。 我估计无法解决多人同时<code>push</code>情况下的竞争条件，并且encfs有安全漏洞，使用<code>上push/pull</code>之前需要加载两层文件系统，不是很方便。</p>
+</li>
+<li><p><code>git-remote-gcryp</code>t用<code>gpg</code>进行远端加密。 比较符合我预期的模式，但是用<code>gpg</code>不是特别方便协作。但是别的方法走不通，只有这个方法可用。</p>
+</li>
+</ol>
+<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><h6 id="安装git-remote-gcrypt和gnupg"><a href="#安装git-remote-gcrypt和gnupg" class="headerlink" title="安装git-remote-gcrypt和gnupg"></a>安装git-remote-gcrypt和gnupg</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git-remote-gcrypt gnupg</span><br></pre></td></tr></table></figure>
+<h6 id="创建一个gpg的key，"><a href="#创建一个gpg的key，" class="headerlink" title="创建一个gpg的key，"></a>创建一个gpg的key，</h6><p> 需要设置用户名，邮箱，描述等，不要设置过期时间</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpg --gen-key</span><br></pre></td></tr></table></figure>
+<h6 id="记录一下生成的key的ID，"><a href="#记录一下生成的key的ID，" class="headerlink" title="记录一下生成的key的ID，"></a>记录一下生成的key的ID，</h6><p>比如2048R/songapore013里面的songapore013，2048代表加密轮数，越多越不容易破解</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpg --list-keys</span><br></pre></td></tr></table></figure>
+<h6 id="生成一个测试版本库"><a href="#生成一个测试版本库" class="headerlink" title="生成一个测试版本库"></a>生成一个测试版本库</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir test1 &amp;&amp; cd test1</span><br><span class="line">git init .</span><br><span class="line">echo &quot;test&quot; &gt; a.txt</span><br><span class="line">git add . &amp;&amp; git ci -m &quot;update&quot;</span><br></pre></td></tr></table></figure>
+<h5 id="创建一个测试project"><a href="#创建一个测试project" class="headerlink" title="创建一个测试project"></a>创建一个测试project</h5><p>在你的github上面创建一个project，比如：<a href="https://github.com/songapore">https://github.com/songapore</a></p>
+<h6 id="配置远端加密版本库"><a href="#配置远端加密版本库" class="headerlink" title="配置远端加密版本库"></a>配置远端加密版本库</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add cryptremote gcrypt::git@github.com:songapore/songapore.git</span><br></pre></td></tr></table></figure>
+<h6 id="最好指定用哪个key加密"><a href="#最好指定用哪个key加密" class="headerlink" title="最好指定用哪个key加密"></a>最好指定用哪个key加密</h6><p> 这样可以共享这个key给其他人用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config remote.cryptremote.gcrypt-participants &quot;songapore013&quot;</span><br></pre></td></tr></table></figure>
+<h6 id="push到远端"><a href="#push到远端" class="headerlink" title="push到远端"></a>push到远端</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push cryptremote master</span><br></pre></td></tr></table></figure>
+<ul>
+<li>访问远端版本库，看看文件内容，和commit里面的信息，是不是都是加密的？</li>
+</ul>
+<h2 id="如何分享给其他人"><a href="#如何分享给其他人" class="headerlink" title="如何分享给其他人"></a>如何分享给其他人</h2><h5 id="导出key"><a href="#导出key" class="headerlink" title="导出key"></a>导出key</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpg --export-secret-key -a &quot;share@share.com&quot; &gt; secretkey.asc</span><br></pre></td></tr></table></figure>
+<ul>
+<li>把secretkey.asc分享给其他人，拷贝的时候记得先压缩加密一下再发送，更安全</li>
+</ul>
+<h6 id="别人电脑里面导入"><a href="#别人电脑里面导入" class="headerlink" title="别人电脑里面导入"></a>别人电脑里面导入</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpg --import secretkey.asc</span><br></pre></td></tr></table></figure>
+<h6 id="下载代码"><a href="#下载代码" class="headerlink" title="下载代码"></a>下载代码</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone gcrypt::git@github.com:songapore/songapore.git test2 // test2是git clone 在本地的文</span><br><span class="line">件名</span><br></pre></td></tr></table></figure>
+<h6 id="也要指定一下用什么key加密"><a href="#也要指定一下用什么key加密" class="headerlink" title="也要指定一下用什么key加密"></a>也要指定一下用什么key加密</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config remote.cryptremote.gcrypt-participants &quot;songapore013&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>用这种方法，可以用<code>git</code>管理一些私密又需要协作的信息（比如服务器配置）， 也可以把github当作私密的版本控制系统来用（commit的消息还是明文的）。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">songjiapo</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://github.com/songapore/songapore.github.io/posts/undefined/">https://github.com/songapore/songapore.github.io/posts/undefined/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/git-github/">git github</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/posts/undefined/"><img class="prev-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">Git忽略规则及.gitignore规则正确姿势</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">songjiapo</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">76</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">30</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">13</div></a></div></div><a class="button--animated" id="card-info-btn" href="https://github.com/songapore/songapore.github.io"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/songapore" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:291946540@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-docs card-categories"><div class="item-headline"><i class="fas fa-car-side"></i><span>文檔目錄</span></div><div class="item-content"><ul class=card-category-list> <li class=card-category-list-item><a class=card-category-list-link href=/posts/21cfbf15/ >🚀 快速開始</a></li> <li class=card-category-list-item><a class=card-category-list-link href=/posts/dc584b87/ >📑 主題頁面</a></li> <li class=card-category-list-item><a class=card-category-list-link href=/posts/4aa8abbe/ >🛠 主題配置-1</a></li> <li class=card-category-list-item><a class=card-category-list-link href=/posts/ceeb73f/ >⚔️ 主題配置-2</a></li> <li class=card-category-list-item><a class=card-category-list-link href=/posts/98d20436/ >❓ 主題問答</a></li> <li class=card-category-list-item><a class=card-category-list-link href=/posts/4073eda/ >⚡️ 進階教程</a></li> <li class=card-category-list-item><a class=card-category-list-link href=/posts/198a4240/ >✨ 更新日誌</a></li> </ul></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E7%9A%84"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%80%83%E8%99%91%E4%BA%86%E5%87%A0%E4%B8%AA%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">考虑了几个解决方案：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">1.1.1.</span> <span class="toc-text">使用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%AE%89%E8%A3%85git-remote-gcrypt%E5%92%8Cgnupg"><span class="toc-number">1.1.1.0.1.</span> <span class="toc-text">安装git-remote-gcrypt和gnupg</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAgpg%E7%9A%84key%EF%BC%8C"><span class="toc-number">1.1.1.0.2.</span> <span class="toc-text">创建一个gpg的key，</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E7%94%9F%E6%88%90%E7%9A%84key%E7%9A%84ID%EF%BC%8C"><span class="toc-number">1.1.1.0.3.</span> <span class="toc-text">记录一下生成的key的ID，</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E4%B8%80%E4%B8%AA%E6%B5%8B%E8%AF%95%E7%89%88%E6%9C%AC%E5%BA%93"><span class="toc-number">1.1.1.0.4.</span> <span class="toc-text">生成一个测试版本库</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%B5%8B%E8%AF%95project"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">创建一个测试project</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%89%88%E6%9C%AC%E5%BA%93"><span class="toc-number">1.1.1.1.1.</span> <span class="toc-text">配置远端加密版本库</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%9C%80%E5%A5%BD%E6%8C%87%E5%AE%9A%E7%94%A8%E5%93%AA%E4%B8%AAkey%E5%8A%A0%E5%AF%86"><span class="toc-number">1.1.1.1.2.</span> <span class="toc-text">最好指定用哪个key加密</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#push%E5%88%B0%E8%BF%9C%E7%AB%AF"><span class="toc-number">1.1.1.1.3.</span> <span class="toc-text">push到远端</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%88%86%E4%BA%AB%E7%BB%99%E5%85%B6%E4%BB%96%E4%BA%BA"><span class="toc-number">2.</span> <span class="toc-text">如何分享给其他人</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%BC%E5%87%BAkey"><span class="toc-number">2.0.0.1.</span> <span class="toc-text">导出key</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%88%AB%E4%BA%BA%E7%94%B5%E8%84%91%E9%87%8C%E9%9D%A2%E5%AF%BC%E5%85%A5"><span class="toc-number">2.0.0.1.1.</span> <span class="toc-text">别人电脑里面导入</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E4%BB%A3%E7%A0%81"><span class="toc-number">2.0.0.1.2.</span> <span class="toc-text">下载代码</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%B9%9F%E8%A6%81%E6%8C%87%E5%AE%9A%E4%B8%80%E4%B8%8B%E7%94%A8%E4%BB%80%E4%B9%88key%E5%8A%A0%E5%AF%86"><span class="toc-number">2.0.0.1.3.</span> <span class="toc-text">也要指定一下用什么key加密</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/undefined/" title="udsoncan.connections源码"><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="udsoncan.connections源码"/></a><div class="content"><a class="title" href="/posts/undefined/" title="udsoncan.connections源码">udsoncan.connections源码</a><time datetime="2021-09-05T12:12:19.046Z" title="Created 2021-09-05 20:12:19">2021-09-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/undefined/" title="udsoncan-underlying protocol(connections)"><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="udsoncan-underlying protocol(connections)"/></a><div class="content"><a class="title" href="/posts/undefined/" title="udsoncan-underlying protocol(connections)">udsoncan-underlying protocol(connections)</a><time datetime="2021-09-05T12:12:19.046Z" title="Created 2021-09-05 20:12:19">2021-09-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/undefined/" title="Hello World"><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/posts/undefined/" title="Hello World">Hello World</a><time datetime="2021-09-05T08:33:24.462Z" title="Created 2021-09-05 16:33:24">2021-09-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/7670b080/" title="Butterfly 美化/優化/魔改 教程合集"><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/butterfly-diy-cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Butterfly 美化/優化/魔改 教程合集"/></a><div class="content"><a class="title" href="/posts/7670b080/" title="Butterfly 美化/優化/魔改 教程合集">Butterfly 美化/優化/魔改 教程合集</a><time datetime="2021-01-02T10:11:22.000Z" title="Created 2021-01-02 18:11:22">2021-01-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/ea33ab97/" title="自定義側邊欄"><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/aside-diy-cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="自定義側邊欄"/></a><div class="content"><a class="title" href="/posts/ea33ab97/" title="自定義側邊欄">自定義側邊欄</a><time datetime="2020-12-30T13:48:10.000Z" title="Created 2020-12-30 21:48:10">2020-12-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
